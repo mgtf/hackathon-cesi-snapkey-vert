@@ -1,2 +1,2 @@
-# hackathon-cesi-snapkey-vert
-Hackathon CESI x SNAPKEY - Équipe verte
+# Hackathon CESI x SNAPKEY
+## Équipe verte
