@@ -11,7 +11,7 @@ const PAGE = "0"; // Le numéro de page
 const SORT = "0"; // Le paramètre de tri
 const WPO = "0"; // Seulement des items avec prix (ici à FAUX)
 
-const fields = ['name', 'address', 'zipCode', 'surface', 'price', 'disponibility', 'realPropertyType', 'leaseAssignment'];
+const fields = ['name', 'address', 'zipCode', 'surface', 'price', 'disponibility', 'realPropertyType', "TransactionType", 'leaseAssignment'];
 const opts = { keys: fields, delimiter : ";" };
 
 var links = [];
@@ -125,9 +125,9 @@ async function asyncForLoop(array, typeDeBien, typeDeTransaction){
         }
 
         if(typeDeTransaction !== "cession")
-          finalJson[ID] = {name : name, id : ID, address: address, zipCode : zipCode, surface : surface, price: price, disponibility : disponibility, realPropertyType : typeDeBien}
+          finalJson[ID] = {name : name, id : ID, address: address, zipCode : zipCode, surface : surface, price: price, disponibility : disponibility, realPropertyType : typeDeBien, TransactionType: typeDeTransaction}
         else
-          finalJson[ID] = {name : name, id : ID, address: address, zipCode : zipCode, surface : surface, price: price, disponibility : disponibility, realPropertyType : typeDeBien, leaseAssignment : lease}
+          finalJson[ID] = {name : name, id : ID, address: address, zipCode : zipCode, surface : surface, price: price, disponibility : disponibility, realPropertyType : typeDeBien, TransactionType: typeDeTransaction, leaseAssignment : lease}
 
         isRequestOk[url] = true;
 
