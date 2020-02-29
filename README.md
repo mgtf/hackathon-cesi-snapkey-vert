@@ -13,12 +13,18 @@ Cloner le git et lancer un `$ npm install` pour être sûr d'avoir tous les modu
 ## Paramètres
 
 Les combinaisons suivantes seulement sont acceptées : 
+
+- `$ node index.js`
+Cherche sans aucun paramètres tous les types de biens et tous les types de transaction. DANGEREUX. RISSQUE DE CRASH.
 - `$ node index.js bureau location`
 - `$ node index.js bureau vente`
 - `$ node index.js commerce location` 
 - `$ node index.js commerce vente`
 - `$ node index.js commerce cession`
-Vous pouvez spécifier après cela le code postal.
+
+Il est possible de spécifier un code postal.
+
+- `$ node index.js commerce cession 75000`
 
 ### Paramètres de recherche
 
@@ -35,7 +41,7 @@ Les constantes PAGE et SORT ne sont pas importantes car :
 - Le nombre de page sera normalement toujours à 0 si l'on garde un nombre d'item par page haut.
 - Le SORT n'impacte pas le scraping
 
-### Lancer la recherche
+### Fonctionnement
 
 Le script est automatisé pour rechercher automatiquement tout (dans la fonction `main`), mais il est possible de modifier le code pour rechercher uniquement certains paramètres. Il suffira alors de mettre dans la fonction `main` toutes les requêtes que vous souhaitez faire.
 ```js
@@ -69,7 +75,7 @@ requestProperty("bureau", "location", "75000")
 requestProperty("commerces", "cession")
 ```
 
-### Fonctionnement
+### Fonctionnement de la requête
 
 La fonction renvoie une PROMISE (donc du code asynchrone), il faut donc la récupérer avec un "then" ou imbriquer l'appel de la fonction dans une fonction asynchrone. Cette promise renvoie ensuite un JSON.
 
