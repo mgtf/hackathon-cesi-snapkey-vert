@@ -12,10 +12,11 @@ Cloner le git et lancer un `$ npm install` pour être sûr d'avoir tous les modu
 
 ## Paramètres
 
+Le script est automatisé pour rechercher automatiquement tout (dans la fonction `main`) lorsqu'on ne spécifie pas d'arguments, mais il est possible d'en ajouter pour rechercher uniquement certains paramètres.
 Les combinaisons suivantes seulement sont acceptées : 
 
 - `$ node index.js`
-Cherche sans aucun paramètres tous les types de biens et tous les types de transaction. DANGEREUX. RISSQUE DE CRASH.
+Cherche sans aucun paramètre tous les types de biens et tous les types de transaction. DANGEREUX. RISSQUE DE CRASH.
 - `$ node index.js bureau location`
 - `$ node index.js bureau vente`
 - `$ node index.js commerce location` 
@@ -26,9 +27,9 @@ Il est possible de spécifier un code postal.
 
 - `$ node index.js commerce cession 75000`
 
-### Paramètres de recherche
+### Paramètres de recherche secondaires
 
-Normalement, les paramètres on des commentaires pour que vous puissiez les repérer.
+Normalement, les paramètres ont des commentaires pour que vous puissiez les repérer.
 
 ```js
 const PAGING = "10000"; // Le nombre d'items par page (garder HAUT)
@@ -39,11 +40,11 @@ const WPO = "0"; // Seulement des items avec prix (ici à FAUX)
 
 Les constantes PAGE et SORT ne sont pas importantes car :
 - Le nombre de page sera normalement toujours à 0 si l'on garde un nombre d'item par page haut.
-- Le SORT n'impacte pas le scraping
+- Le SORT n'impacte pas le scraping, et comme on a recourt à des méthodes asynchrones, le JSON ne sera pas dans le même ordre.
 
 ### Fonctionnement
 
-Le script est automatisé pour rechercher automatiquement tout (dans la fonction `main`), mais il est possible de modifier le code pour rechercher uniquement certains paramètres. Il suffira alors de mettre dans la fonction `main` toutes les requêtes que vous souhaitez faire.
+La fonction va construire un string de recherche en fonction des arguments entrés. S'il n'y a aucun argument, elle fera la recherche pour tous les arguments en simultané. (Dangereux, risque de crash)
 ```js
 const ZPTID = {
   "bureau" : 1,
@@ -56,24 +57,11 @@ const TT = {
   "cession" : 3
 };
 
-function requestProperty(zptid, tt, zipCode)
+async function requestProperty(zptid, tt, zipCode)
 ```
 
-Il suffit d'entrer le ZPTID, le TT et le code postal que vous souhaitez pour lancer la bonne recherche. 
+Il y aura ensuite avec cette recherche un tas d'autres requêtes qui iront chercher les informations requises des biens.
 
-#### Exemples :
-- Pour rechercher les bureaux en vente dans Paris, ce sera :
-```js
-requestProperty("bureau", "vente", "75")
-```
-- Pour rechercher les bureaux en location dans le 1er arrondissement de Paris, ce sera :
-```js
-requestProperty("bureau", "location", "75000")
-```
-- Pour rechercher les commerces en cession en France, laisser vide :
-```js
-requestProperty("commerces", "cession")
-```
 
 ### Fonctionnement de la requête
 
@@ -121,7 +109,7 @@ requestProperty("bureau", "location").then(function() {
 });
 ```
 
-Cela vous afficher trois barres :
+Cela vous affichera trois barres :
 
 ```js
  ████████████████████████████████████████ 100% | ETA: 0s | 313/313
@@ -129,7 +117,7 @@ Cela vous afficher trois barres :
  ███████████████████████████████████░░░░░ 87.5% | ETA: 0s | 5/5
 ```
 
-Le ficher sera sauveardé dans le dossier `csv`
+Le ficher sera sauvegardé dans le dossier `csv`
 
 ## TODO
 

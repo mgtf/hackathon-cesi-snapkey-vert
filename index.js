@@ -12,7 +12,7 @@ const SORT = "0"; // Le paramètre de tri
 const WPO = "0"; // Seulement des items avec prix (ici à FAUX)
 
 const fields = ["type_de_transaction","type_de_bien","code_postal","prix_m2_an","surface"];
-const opts = { keys: fields, delimiter : ";" };
+const opts = { keys: fields};
 
 var finalJson = {};
 var isRequestOk = {};
