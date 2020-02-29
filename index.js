@@ -5,7 +5,6 @@ const cheerio = require('cheerio');
 const { Parser } = require('json2csv');
 const fs = require('fs');
 
-const SEARCH = "75001"; // Le code postal à chercher
 const PAGING = "10000"; // Le nombre d'items par page (pas important)
 const PAGE = "0"; // Le numéro de page
 const SORT = "0"; // Le paramètre de tri
@@ -30,9 +29,9 @@ const TT = {
 };
 
 //Requête de location/vente commerce/bureau
-function requestProperty(zptid, tt){
-  isRequestOk[requestString + constructGetParameters(zptid, tt)] = false
-  https.get(requestString + constructGetParameters(zptid, tt) , (resp) => {
+function requestProperty(zptid, tt, zipCode){
+  isRequestOk[requestString + constructGetParameters(zptid, tt, zipCode)] = false
+  https.get(requestString + constructGetParameters(zptid, tt, zipCode) , (resp) => {
     let data = '';
     let typeDeBien = zptid
     let typeDeTransaction = tt
@@ -49,7 +48,7 @@ function requestProperty(zptid, tt){
         if(this.attribs.href && this.attribs.href.indexOf('.aspx') > -1) links.push(this.attribs.href);
       })
       links = [...new Set(links)];
-      isRequestOk[requestString + constructGetParameters(zptid, tt)] = true
+      isRequestOk[requestString + constructGetParameters(zptid, tt, zipCode)] = true
       asyncForLoop(links, typeDeBien, typeDeTransaction);
     });
 
@@ -58,8 +57,8 @@ function requestProperty(zptid, tt){
   });
 }
 
-function constructGetParameters(zptid, tt){
-  return "ZPTID=" + ZPTID[zptid.toLowerCase()] + "&TT=" + TT[tt.toLowerCase()] + "&Paging=" + PAGING + "&Search=" + SEARCH + "&Page=" + PAGE + "&Sort=" + SORT + "&WPO=" + WPO + "&_=1582913933890"
+function constructGetParameters(zptid, tt, zipCode){
+  return "ZPTID=" + ZPTID[zptid.toLowerCase()] + "&TT=" + TT[tt.toLowerCase()] + "&Paging=" + PAGING + "&Search=" + zipCode + "&Page=" + PAGE + "&Sort=" + SORT + "&WPO=" + WPO + "&_=1582913933890"
 }
 
 // For loop avec des "await" pour ne pas saturer les requêtes. Risque de pendre un peu plus de temps, du coup.
@@ -101,9 +100,8 @@ async function asyncForLoop(array, typeDeBien, typeDeTransaction){
           if(lease) lease = lease.data
           else lease = null
         }
-
         for(var word of zipCode){
-          if(/(?:0[1-9]|[13-8][0-9]|2[ab1-9]|9[0-5])(?:[0-9]{3})?|9[78][1-9](?:[0-9]{2})?/.test(zipCode)) {
+          if(/[0-9]{5}/.test(word)) {
             zipCode = word;
             break;
           }
@@ -172,11 +170,11 @@ async function waitForRequest(){
 }
 
 async function test(){
-  requestProperty("bureau", "vente")
-  requestProperty("bureau", "location")
-  requestProperty("commerce", "vente")
-  requestProperty("commerce", "location")
-  requestProperty("commerce", "cession")
+  requestProperty("bureau", "vente", "75001")
+  requestProperty("bureau", "location", "75001")
+  requestProperty("commerce", "vente", "75001")
+  requestProperty("commerce", "location", "75001")
+  requestProperty("commerce", "cession", "75001")
 }
 
 test();
