@@ -19,7 +19,6 @@ On aurait voulu permettre de mettre des arguments pour spécifier les paramètre
 Normalement, les paramètres on des commentaires pour que vous puissiez les repérer.
 
 ```js
-const SEARCH = "75001"; // Le code postal à chercher
 const PAGING = "10000"; // Le nombre d'items par page (garder HAUT)
 const PAGE = "0"; // Le numéro de page (pas important)
 const SORT = "0"; // Le paramètre de tri (pas important)
@@ -32,7 +31,7 @@ Les constantes PAGE et SORT ne sont pas importantes car :
 
 ### Lancer la recherche
 
-Le script est automatisé pour rechercher automatiquement tout (dans la fonction `test`), mais il est possible de modifier le code pour rechercher uniquement certains paramètres. Il suffira alors de mettre dans la fonction `test` toutes les requêtes que vous souhaitez faire.
+Le script est automatisé pour rechercher automatiquement tout (dans la fonction `main`), mais il est possible de modifier le code pour rechercher uniquement certains paramètres. Il suffira alors de mettre dans la fonction `main` toutes les requêtes que vous souhaitez faire.
 ```js
 const ZPTID = {
   "bureau" : 1,
@@ -45,10 +44,47 @@ const TT = {
   "cession" : 3
 };
 
-function requestProperty(zptid, tt)
+function requestProperty(zptid, tt, zipCode)
 ```
 
-Il suffit d'entrer le ZPTID et le TT que vous souhaitez pour lancer la bonne recherche. Par exemple, pour rechercher les bureaux en vente, ce sera :
+Il suffit d'entrer le ZPTID, le TT et le code postal que vous souhaitez pour lancer la bonne recherche. 
+
+#### Exemples :
+- Pour rechercher les bureaux en vente dans Paris, ce sera :
 ```js
-requestProperty("bureau", "vente")
+requestProperty("bureau", "vente", "75")
 ```
+- Pour rechercher les bureaux en location dans le 1er arrondissement de Paris, ce sera :
+```js
+requestProperty("bureau", "location", "75000")
+```
+- Pour rechercher les commerces en cession en France, laisser vide :
+```js
+requestProperty("commerces", "cession")
+```
+
+### Fonctionnement
+
+La fonction renvoie une PROMISE (donc du code asynchrone), il faut donc la récupérer avec un "then" ou imbriquer l'appel de la fonction dans une fonction asynchrone. Cette promise renvoie ensuite un JSON.
+
+#### Exemples :
+
+- Récupération asynchrone :
+```js
+requestProperty("bureau", "vente", "75").then(function(json){
+	// Votre code
+})
+```
+- En forçant le synchrone :
+```js
+async function main(){
+	var json = await requestProperty("bureau", "vente", "75");
+}
+main();
+```
+
+## TODO
+
+- Ajouter une barre de chargement
+- Traduire les phrases en français
+- **DEBUGGING**
