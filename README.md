@@ -1,6 +1,6 @@
-#Hackathon CESI x SNAPKEY, Équipe verte
+# Hackathon CESI x SNAPKEY, Équipe verte
 
-##Installation
+## Installation
 
 ### Installer le script
 
