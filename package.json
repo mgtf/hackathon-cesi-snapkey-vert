@@ -1,0 +1,27 @@
+{
+  "name": "scraping-cbre",
+  "version": "0.5.0",
+  "description": "Scraping CBRE data",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgtf/hackathon-cesi-snapkey-vert.get.git"
+  },
+  "author": "Loadren",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mgtf/hackathon-cesi-snapkey-vert.get/issues"
+  },
+  "homepage": "https://github.com/mgtf/hackathon-cesi-snapkey-vert.get#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "doc-parser": "^0.4.9",
+    "htmlparser2": "^4.1.0",
+    "json2csv": "^4.5.4",
+    "node-html-parser": "^1.2.7"
+  }
+}
