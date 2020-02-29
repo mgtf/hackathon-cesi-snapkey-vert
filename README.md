@@ -1,4 +1,6 @@
-#Installation
+#Hackathon CESI x SNAPKEY, Équipe verte
+
+##Installation
 
 ### Installer le script
 
@@ -8,11 +10,11 @@ Cloner le git et lancer un `$ npm install` pour être sûr d'avoir tous les modu
 
 - Pour lancer le script, `$ node index.js`
 
-# Paramètres
+## Paramètres
 
 On aurait voulu permettre de mettre des arguments pour spécifier les paramètres, mais faute de temps, il faudra aller les changer directement dans le code !
 
-##Paramètres de recherche
+###Paramètres de recherche
 
 Normalement, les paramètres on des commentaires pour que vous puissiez les repérer.
 
@@ -28,7 +30,7 @@ Les constantes PAGE et SORT ne sont pas importantes car :
 - Le nombre de page sera normalement toujours à 0 si l'on garde un nombre d'item par page haut.
 - Le SORT n'impacte pas le scraping
 
-##Lancer la recherche
+###Lancer la recherche
 
 Le script est automatisé pour rechercher automatiquement tout (dans la fonction `test`), mais il est possible de modifier le code pour rechercher uniquement certains paramètres. Il suffira alors de mettre dans la fonction `test` toutes les requêtes que vous souhaitez faire.
 ```js
