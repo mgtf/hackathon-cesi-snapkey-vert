@@ -83,8 +83,39 @@ async function main(){
 main();
 ```
 
+Pour chaque requête faite, il y a une barre de chargement qui sera affichée. Si par exemple vous faites trois requêtes imbriquées :
+```js
+requestProperty("bureau", "location").then(function() {
+    requestProperty("commerce", "location").then(function() {
+        requestProperty("commerce", "cession").then(function() {
+            try {
+                const parser = new Parser(opts);
+                var jsonArray = Object.keys(finalJson).map(function(k) {
+                    return finalJson[k]
+                });
+                const csv = parser.parse(jsonArray);
+                var universalBOM = "\uFEFF";
+                fs.writeFile(__dirname + "/csv/vert.csv", universalBOM + csv, function(err) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    console.log("The file was saved!");
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    });
+});
+```
+
+Cela vous afficher trois barres :
+
+` ████████████████████████████████████████ 100% | ETA: 0s | 313/313`
+` ████████████████████████████████████████ 100% | ETA: 0s | 5/5`
+` ███████████████████████████████████░░░░░ 87.5% | ETA: 0s | 5/5`
+
 ## TODO
 
-- Ajouter une barre de chargement
 - Traduire les phrases en français
 - **DEBUGGING**

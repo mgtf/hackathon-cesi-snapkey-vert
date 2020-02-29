@@ -19,6 +19,8 @@
   "dependencies": {
     "axios": "^0.19.2",
     "cheerio": "^1.0.0-rc.3",
+    "cli-progress": "^3.6.0",
+    "console-progress-bar": "^1.0.4",
     "doc-parser": "^0.4.9",
     "htmlparser2": "^4.1.0",
     "json2csv": "^4.5.4",

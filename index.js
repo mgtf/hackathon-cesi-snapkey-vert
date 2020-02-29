@@ -4,6 +4,7 @@ var HTMLParser = require('node-html-parser');
 const cheerio = require('cheerio');
 const { Parser } = require('json2csv');
 const fs = require('fs');
+const cliProgress = require('cli-progress');
 
 const PAGING = "10000"; // Le nombre d'items par page (pas important)
 const PAGE = "0"; // Le numéro de page
@@ -70,6 +71,9 @@ function constructGetParameters(zptid, tt, zipCode){
 // For loop avec des "await" pour ne pas saturer les requêtes. Risque de pendre un peu plus de temps, du coup.
 async function asyncForLoop(array, typeDeBien, typeDeTransaction){
   return new Promise(function(resolve, reject) {
+    var length = array.length
+    const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+    bar1.start(length, 0);
     for(var item of array){
       isRequestOk[item] = false;
       requestParameters[item] = [typeDeBien, typeDeTransaction];
@@ -114,12 +118,12 @@ async function asyncForLoop(array, typeDeBien, typeDeTransaction){
             price = Math.floor(parseFloat(price)/parseFloat(surface));
           }
           finalJson[ID] = {type_de_transaction : requestParameters[url][1], type_de_bien : requestParameters[url][0], code_postal : zipCode, prix_m2_an: price, surface : surface}
-
           isRequestOk[url] = true;
-
           var arr = Object.keys(isRequestOk).map(function(k) { return isRequestOk[k] });
+          bar1.increment();
           if(arr.filter(element => element == false).length == 0){
             resolve(finalJson)
+            bar1.stop();
           }
         });
 
@@ -139,7 +143,7 @@ function main(){
           var jsonArray = Object.keys(finalJson).map(function(k) { return finalJson[k] });
           const csv = parser.parse(jsonArray);
           var universalBOM = "\uFEFF";
-          fs.writeFile(__dirname + "/csv/result.csv", universalBOM+csv, function(err) {
+          fs.writeFile(__dirname + "/csv/vert.csv", universalBOM+csv, function(err) {
             if(err) {
               return console.log(err);
             }
