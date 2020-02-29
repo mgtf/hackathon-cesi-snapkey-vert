@@ -74,6 +74,7 @@ async function asyncForLoop(array, typeDeBien, typeDeTransaction){
     var length = array.length
     const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
     bar1.start(length, 0);
+    if(length == 0) bar1.stop();
     for(var item of array){
       isRequestOk[item] = false;
       requestParameters[item] = [typeDeBien, typeDeTransaction];
@@ -90,6 +91,11 @@ async function asyncForLoop(array, typeDeBien, typeDeTransaction){
         // La réponse a été reçue en entière
         resp.on('end', () => {
           if(typeof data !== "string") return;
+          if(data.indexOf("L'offre demandée n'est plus disponible.") > -1){
+            bar1.increment();
+            isRequestOk[url] = true;
+            return;
+          }
           const $ = cheerio.load(data);
 
           var zipCode = "";
@@ -100,28 +106,32 @@ async function asyncForLoop(array, typeDeBien, typeDeTransaction){
           surface = $(".infos-more.row").find("p")[0].children[1].data;
           price = $(".infos-more.row").find("p")[1].children[2].data;
           zipCode = $(".infos").find("p")[0].children[0].data.split(' ');
+
+          //Formattons-les
           for(var word of zipCode){
             if(/[0-9]{5}/.test(word)) {
               zipCode = word;
               break;
             }
           }
-
-          //Formattons-les
+          if(Array.isArray(zipCode)){
+            zipCode = null;
+          }
           if(surface.indexOf(':') > -1 && surface.indexOf('m²') > -1) surface = surface.substring(surface.indexOf(':')+2, surface.indexOf('m²')-1).trim()
           else surface = null
           var stringPrice = price;
           if(price.indexOf(':') > -1 && price.indexOf('€') > -1) price = price.substring(price.indexOf(':')+2, price.indexOf('€')-1).trim().split(' ').join('')
           else price = null
-
           if(price && stringPrice.indexOf("m²/an") == -1 && stringPrice.indexOf('€') > -1){
             price = Math.floor(parseFloat(price)/parseFloat(surface));
           }
+          // On l'intègre au JSON et on dit que la requête est finie
           finalJson[ID] = {type_de_transaction : requestParameters[url][1], type_de_bien : requestParameters[url][0], code_postal : zipCode, prix_m2_an: price, surface : surface}
           isRequestOk[url] = true;
           var arr = Object.keys(isRequestOk).map(function(k) { return isRequestOk[k] });
           bar1.increment();
           if(arr.filter(element => element == false).length == 0){
+            //SI toutes les requêtes sont terminées, retourne la promesse
             resolve(finalJson)
             bar1.stop();
           }
@@ -157,4 +167,51 @@ function main(){
   });
 }
 
-main();
+if(process.argv.length > 3){
+  var zptid = process.argv[2];
+  var tt = process.argv[3];
+  var zipCode = process.argv[4];
+  if(ZPTID[zptid] !== undefined && TT[tt] !== undefined && (zptid+tt !== "bureaucession")) {
+    if(zipCode){
+      requestProperty(zptid, tt, zipCode).then(function(){
+        try{
+          const parser = new Parser(opts);
+          var jsonArray = Object.keys(finalJson).map(function(k) { return finalJson[k] });
+          const csv = parser.parse(jsonArray);
+          var universalBOM = "\uFEFF";
+          fs.writeFile(__dirname + "/csv/" + zptid + "-" + tt + "-" + Math.round(new Date().getTime() / 1000) + ".csv", universalBOM+csv, function(err) {
+            if(err) {
+              return console.log(err);
+            }
+            console.log("The file was saved!");
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    }else{
+      requestProperty(zptid, tt).then(function(){
+        try{
+          const parser = new Parser(opts);
+          var jsonArray = Object.keys(finalJson).map(function(k) { return finalJson[k] });
+          const csv = parser.parse(jsonArray);
+          var universalBOM = "\uFEFF";
+          fs.writeFile(__dirname + "/csv/" + zptid + "-" + tt + "-" + Math.round(new Date().getTime() / 1000) + ".csv", universalBOM+csv, function(err) {
+            if(err) {
+              return console.log(err);
+            }
+            console.log("The file was saved!");
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    }
+  }else{
+    console.log("Les combinaisons suivantes seulement sont acceptées : \n-'node index.js bureau location' \n-'node index.js bureau vente' \n-'node index.js commerce location' \n-'node index.js commerce vente'\n-'node index.js commerce cession'\nVous pouvez spécifier après cela le code postal.")
+  }
+}else if(process.argv.length > 2){
+  console.log("Il faut préciser dans l'ordre le type de bien et ensuite le type de transaction. \nExemple : 'node index.js bureau location'")
+}else{
+  main();
+}

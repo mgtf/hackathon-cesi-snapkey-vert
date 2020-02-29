@@ -12,7 +12,13 @@ Cloner le git et lancer un `$ npm install` pour être sûr d'avoir tous les modu
 
 ## Paramètres
 
-On aurait voulu permettre de mettre des arguments pour spécifier les paramètres, mais faute de temps, il faudra aller les changer directement dans le code !
+Les combinaisons suivantes seulement sont acceptées : 
+- `$ node index.js bureau location`
+- `$ node index.js bureau vente`
+- `$ node index.js commerce location` 
+- `$ node index.js commerce vente`
+- `$ node index.js commerce cession`
+Vous pouvez spécifier après cela le code postal.
 
 ### Paramètres de recherche
 
@@ -111,11 +117,13 @@ requestProperty("bureau", "location").then(function() {
 
 Cela vous afficher trois barres :
 
-```
+```js
  ████████████████████████████████████████ 100% | ETA: 0s | 313/313
  ████████████████████████████████████████ 100% | ETA: 0s | 5/5
  ███████████████████████████████████░░░░░ 87.5% | ETA: 0s | 5/5
 ```
+
+Le ficher sera sauveardé dans le dossier `csv`
 
 ## TODO
 
