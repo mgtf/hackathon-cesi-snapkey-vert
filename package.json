@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/mgtf/hackathon-cesi-snapkey-vert.get#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
     "cli-progress": "^3.6.0",
     "console-progress-bar": "^1.0.4",
